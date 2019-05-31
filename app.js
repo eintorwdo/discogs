@@ -142,19 +142,19 @@ request({url, headers: {'User-Agent':'test/0.1'}}, function(error,response,body)
                 }
                 console.log('');
                 
-                function readNum(){
+                function readNum(){ //funkcja do wczytywania liczby z klawiatury
                      var num = parseInt(readlineSync.question('Podaj numer: '));
                      return num;
                 }
 
                 var num = readNum();
-                while(!(num > 0 && num < 6)){
+                while(!(num > 0 && num < 6)){   //wyswietlamy liste 5 zespolow i liczby w takim zakresie oczekujemy
                     num = readNum();
                 }
                 var groupID = results[num-1].id;
                 var name = results[num-1].title;
             }
-            else{
+            else{   //w przeciwnym wypadku wybieramy pierwszy wynik wyszukiwania
                 var groupID = results[0].id;
                 var name = results[0].title;
             }
