@@ -1,10 +1,11 @@
 const request = require('request'); //modul ktory bedzie wykonywal zapytania
-const readline = require('readline');
+const readlineSync = require('readline-sync');  //node z natury jest asynchroniczny, a ten modul pozwoli latwo wczytywac synchronicznie wejscie z klawiatury
 
-var rl = readline.createInterface({
-    input: process.stdin,
-    terminal: false
-});
+// var rl = readline.createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//     terminal: true
+// });
 
 var artist = 'Budka Suflera'; //domyslna wartosc
 
@@ -22,6 +23,7 @@ function filterGroup(group){    //funkcja filtrujaca informacje o zespolach
 
 
 var memberRepeat = 0;
+var bandRepeat = 0;
 
 function memberRequest(id, name){   //funkcja pobierajaca informacje o konkretnych czlonkach zespolu
         return new Promise(function (resolve, reject){
@@ -51,8 +53,8 @@ function memberRequest(id, name){   //funkcja pobierajaca informacje o konkretny
 }
 
 
-function groupRequest(groupID){
-    console.log('Pobieram informacje nt. zespołu...');
+function groupRequest(groupID, name){
+    console.log(`Pobieram informacje nt. zespołu ${name}...`);
     request({url: `https://api.discogs.com/artists/${groupID}`, headers: {'User-Agent':'test/0.1'}}, async function(error,res,bod){ //zapytanie o dane zespolu o konkretnym id
         if(!error && res.statusCode == 200){
             var arr = JSON.parse(bod);
@@ -107,8 +109,14 @@ function groupRequest(groupID){
             }
         }
         else if(res.statusCode == 429){
-            console.log('Zbyt wiele zapytań, czekam 10 sekund...');
-            setTimeout(function(){groupRequest(groupID)}, 10000);
+            bandRepeat++;
+            var timeout = 10000;
+            if(memberRepeat > 1){   //przy ponowym bledzie 429 wydluzamy czas oczekiwania
+                timeout = bandRepeat * 10000;
+            }
+            var seconds = timeout/1000;
+            console.log(`Zbyt wiele zapytań, czekam ${seconds} sekund...`);
+            setTimeout(function(){groupRequest(groupID, name)}, timeout);
         }
         else{
             console.log(`Błąd w trakcie wyszukiwania informacji nt. zespołu: ${res.statusCode}`);
@@ -121,25 +129,39 @@ function groupRequest(groupID){
 console.log('');
 console.log('Wyszukuję id zespołu...');
 request({url, headers: {'User-Agent':'test/0.1'}}, function(error,response,body){   //wyszukujemy id zespolu o podanej nazwie
-        if(!error && response.statusCode == 200){
-                if(JSON.parse(body).results.length == 0){
-                        return console.log("Nie znaleziono zespolu, wpisz poprawna nazwe");
+    if(!error && response.statusCode == 200){
+            if(JSON.parse(body).results.length == 0){
+                    return console.log("Nie znaleziono zespolu, wpisz poprawna nazwe");
+            }
+            var results = JSON.parse(body).results;
+            if(results[0].title.toUpperCase() != artist.toUpperCase()){ //jesli nazwa znalezionego zespolu nie pokrywa sie z nazwa podana przy uruchamianiu to program wyswietli liste zespolow do wyboru
+                console.log('');                                        //(zdarzalo sie, ze podalem np. nazwe zespolu Creed, a wyszukiwalo osobe o takim imieniu, czy nazwisku)
+                console.log('Który zespół wybrać?');
+                for(i=0;i<5;i++){
+                    console.log(`${i+1}. ${results[i].title}`);
                 }
-                var results = JSON.parse(body).results;
-                if(results[0].title.toUpperCase() != artist.toUpperCase()){
-                    console.log('');
-                    console.log('Który zespół wybrać?');
-                    for(i=0;i<3;i++){
-                        console.log(`${i+1}. ${results[i].title}`);
-                    }
-                    console.log('');
-                    console.log('Podaj numer: ');
+                console.log('');
+                
+                function readNum(){
+                     var num = parseInt(readlineSync.question('Podaj numer: '));
+                     return num;
                 }
+
+                var num = readNum();
+                while(!(num > 0 && num < 6)){
+                    num = readNum();
+                }
+                var groupID = results[num-1].id;
+                var name = results[num-1].title;
+            }
+            else{
                 var groupID = results[0].id;
-                groupRequest(groupID);
-        }
-        else{
-            console.log(`Błąd w trakcie wyszukiwania id zespołu: ${response.statusCode}`);
-            return error;
-        }
+                var name = results[0].title;
+            }
+            groupRequest(groupID, name);
+    }
+    else{
+        console.log(`Błąd w trakcie wyszukiwania id zespołu: ${response.statusCode}`);
+        return error;
+    }
 });
