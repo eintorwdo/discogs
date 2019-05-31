@@ -1,12 +1,5 @@
 const request = require('request'); //modul ktory bedzie wykonywal zapytania
 const readlineSync = require('readline-sync');  //node z natury jest asynchroniczny, a ten modul pozwoli latwo wczytywac synchronicznie wejscie z klawiatury
-
-// var rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//     terminal: true
-// });
-
 var artist = 'Budka Suflera'; //domyslna wartosc
 
 if(process.argv[2]){
