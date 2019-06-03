@@ -1,3 +1,4 @@
+require('dotenv').config()
 const request = require('request'); //modul ktory bedzie wykonywal zapytania
 const readlineSync = require('readline-sync');  //node z natury jest asynchroniczny, a ten modul pozwoli latwo wczytywac synchronicznie wejscie z klawiatury
 var artist = 'Budka Suflera'; //domyslna wartosc
@@ -7,7 +8,7 @@ if(process.argv[2]){
 }
 
 var replaced = artist.replace(/ /g, '+');    //usuwamy spacje z nazwy zespolu
-var url = `https://api.discogs.com/database/search?q=${replaced}&type=artist&key=cPkcpBDMqvoeXINjbDvW&secret=lNXTbHkWuJtyJUQpdqGyGIHHlODZKLSm`;
+var url = `https://api.discogs.com/database/search?q=${replaced}&type=artist&key=${process.env.KEY}&secret=${process.env.SECRET}`;
 
 function filterGroup(group){    //funkcja filtrujaca informacje o zespolach
         var filteredGroup = {id: group.id, name: group.name};   //zostaja tylko inf. o id zespolu i jego nazwie

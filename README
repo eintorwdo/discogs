@@ -1,3 +1,5 @@
+0.Aby program zadziałał, musisz stworzyć własne konto w serwisie discogs, a następnie w pliku .env zdefiniować
+ zmiennie środowiskowe KEY, oraz SECRET, które można uzyskać w panelu użytkownika
 1.Przed uruchomieniem programu należy zainstalować wymagane moduły poleceniem 'npm install' w terminalu
 2.Aby uruchomić program należy użyć komendy 'node app.js <nazwa_zespołu>'
 3.Program korzystając z API Discogs najpierw wyszukuje ID zespołu o podanej nazwie,
