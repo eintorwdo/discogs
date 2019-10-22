@@ -1,12 +1,5 @@
-0.Aby program zadziałał, musisz stworzyć własne konto w serwisie discogs, a następnie w pliku .env zdefiniować
- zmiennie środowiskowe KEY, oraz SECRET, które można uzyskać w panelu użytkownika
-1.Przed uruchomieniem programu należy zainstalować wymagane moduły poleceniem 'npm install' w terminalu
-2.Aby uruchomić program należy użyć komendy 'node app.js <nazwa_zespołu>'
-3.Program korzystając z API Discogs najpierw wyszukuje ID zespołu o podanej nazwie,
- a następnie dla jego wszystkich członków wyszukuje inne zespoły, w których grało wspólnie przynajmniej 2 muzyków z pierwotnego
-4.Jeśli nie zostanie podany żaden argument przy uruchamianiu programu, to domyślnie wyszukiwane są wyniki dla Budki Suflera :)
-5.Jeśli nazwa zespołu ma 2 człony lub więcej to argument podać w cudzysłowie
-6.Jeśli znaleziony przez Discogs zespół ma inną nazwę od podanej przez użytkownika, to zostanie wyświetlona lista 5 zespołów i
- należy wybrać jeden z listy, tak aby nie było niejasności
-7.Przy dużej liczbie wyszukiwań serwer Discogs może zwracać bład 429 w odpowiedzi i wtedy program odczeka trochę czasu i ponowi zapytanie.
- Przy każdej kolejnej odmowie, czas oczekiwania się wydłuży, ale w końcu zapytanie powinno zostać przyjęte.
+0.0.App provided with a band name as an argument, searches for other bands where at least 2 bandmates played together.
+ 0.1.School project that uses Discogs API. To make it work you need to set up your own KEY and SECRET enviroment variables in .env file
+1.npm install to install required modules
+2.To run: 'node app.js <band_name>'
+3.Default band name - Budka Suflera ;)
